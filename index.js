@@ -38,5 +38,3 @@ for (const it of arguments) {
     process.exit(1);
   }
 }
-
-process.exit(0);
