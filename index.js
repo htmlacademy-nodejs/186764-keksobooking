@@ -1,4 +1,6 @@
-const arguments = process.argv.slice(2);
+'use strict';
+
+const args = process.argv.slice(2);
 
 const Commands = {
   '--version': {
@@ -12,29 +14,37 @@ const Commands = {
     describe: `печатает этот текст;`,
     name: `--version`,
     task: () => {
-      let message = [`Доступные команды:`];
-
-      for (const it in Commands) {
-        message.push(`${Commands[it].name} - ${Commands[it].describe}`);
-      }
-      message = message.join(`\n`);
+      const message = Object.keys(Commands).map((it, i) => {
+        let letter = `${it} - ${Commands[it].describe}`;
+        if (!i) {
+          letter = `Доступные команды:\n` + letter;
+        }
+        return letter;
+      }).join(`\n`);
       console.log(message);
     }
   },
 };
 
-if (!arguments.length) {
-  console.log(
-  `Привет пользователь! \nЭта программа будет запускать сервер «keksobooking». \nАвтор: Слава Милин.`
-  );
-  process.exit(0);
+const ExitStatus = {
+  error: () => {
+    return process.exit(1);
+  },
+  correct: () => {
+    return process.exit(0);
+  }
+};
+
+if (!args.length) {
+  console.log(`Привет пользователь! \nЭта программа будет запускать сервер «keksobooking». \nАвтор: Слава Милин.`);
+  ExitStatus.correct();
 }
 
-for (const it of arguments) {
+for (const it of args) {
   if (Commands[it]) {
     Commands[it].task();
-  } else {
-    console.error(`Неизвестная команда ${it}.\nЧтобы прочитать правила использования приложения, наберите "--help"`);
-    process.exit(1);
+    continue;
   }
+  console.error(`Неизвестная команда ${it}.\nЧтобы прочитать правила использования приложения, наберите "--help"`);
+  ExitStatus.error();
 }

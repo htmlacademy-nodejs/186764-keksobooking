@@ -1,0 +1,24 @@
+{
+  "name": "186764-keksobooking-1",
+  "version": "0.0.1",
+  "description": "* Студент: [Slava Milin](https://up.htmlacademy.ru/nodejs/2/user/186764) * Наставник: [Игорь Антонов](https://htmlacademy.ru/profile/antonov).",
+  "main": "index.js",
+  "scripts": {
+    "test:lint": "eslint .",
+    "test": "npm run test:lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SlavaMilin/186764-keksobooking-1.git"
+  },
+  "author": "Slava Milin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SlavaMilin/186764-keksobooking-1/issues"
+  },
+  "homepage": "https://github.com/SlavaMilin/186764-keksobooking-1#readme",
+  "devDependencies": {
+    "eslint": "5.6.0",
+    "eslint-config-htmlacademy": "0.5.2"
+  }
+}
