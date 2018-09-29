@@ -9,18 +9,20 @@ const ExitStatus = {
   success: 0,
 };
 
+const HELP_COMMAND = `--help`;
+
 if (!args.length) {
   console.log(`Привет пользователь! \nЭта программа будет запускать сервер «keksobooking». \nАвтор: Слава Милин.`);
   process.exit(ExitStatus.success);
 }
 
 for (const it of args) {
-  const currentCommand = commands.find((el) => el.name === it);
-  if (currentCommand) {
-    currentCommand.execute();
+  if (commands[it]) {
+    commands[it].execute();
     continue;
   }
 
-  console.error(`Неизвестная команда ${it}.\nЧтобы прочитать правила использования приложения, наберите "--help"`);
+  console.error(`Неизвестная команда ${it}.`);
+  commands[HELP_COMMAND].execute();
   process.exit(ExitStatus.error);
 }
