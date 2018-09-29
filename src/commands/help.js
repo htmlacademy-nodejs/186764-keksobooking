@@ -1,5 +1,8 @@
 'use strict';
 const versionCommand = require(`./version`);
+const authorCommand = require(`./author`);
+const descriptionCommand = require(`./description`);
+const licenseCommand = require(`./license`);
 
 const helpCommand = {
   describe: `Показывает список доступных комманд;`,
@@ -8,11 +11,15 @@ const helpCommand = {
 
 const commands = [
   versionCommand,
-  helpCommand
+  helpCommand,
+  authorCommand,
+  descriptionCommand,
+  licenseCommand,
 ];
 
 module.exports = {
-  ...helpCommand,
+  describe: helpCommand.describe,
+  name: helpCommand.name,
   execute() {
     console.log(`Доступные команды:\n${commands.map((it) => `${it.name} - ${it.describe}`).join(`\n`)}`);
   }
