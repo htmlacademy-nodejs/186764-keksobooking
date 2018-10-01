@@ -1,7 +1,7 @@
 'use strict';
 
 const packageFile = require(`../../package.json`);
-const colors = require('colors');
+const colors = require(`colors`);
 
 module.exports = {
   describe: `печатает имя автора;`,

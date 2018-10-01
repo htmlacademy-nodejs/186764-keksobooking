@@ -1,6 +1,6 @@
 'use strict';
 
-const colors = require('colors');
+const colors = require(`colors`);
 
 const packageFile = require(`../../package.json`);
 

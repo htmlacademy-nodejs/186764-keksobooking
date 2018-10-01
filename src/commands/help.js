@@ -1,6 +1,6 @@
 'use strict';
 
-const colors = require('colors');
+const colors = require(`colors`);
 
 const helpCommand = {
   describe: `Показывает список доступных комманд;`,
