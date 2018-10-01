@@ -14,6 +14,8 @@ const commands = {
   [descriptionCommand.name]: descriptionCommand,
 };
 
+helpCommand.setAvailableCommands(commands);
+
 module.exports = {
   commands,
 };
