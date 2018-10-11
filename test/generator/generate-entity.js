@@ -77,6 +77,10 @@ describe(`Generate object of announcement`, () => {
         assert.includeMembers(AnnouncerSettings.features, testData.offer.features);
       }
     });
+    it(`description should be empty`, () => {
+      const testData = generateEntity();
+      assert.isEmpty(testData.offer.description);
+    });
   });
 
   describe(`Check location`, () => {
