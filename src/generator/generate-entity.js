@@ -11,6 +11,7 @@ const AnnouncerSettings = {
   MAX_ROOMS: 5,
   MIN_GUESTS: 1,
   MAX_GUESTS: 10,
+  DAY_SHIFT: 7,
   titles: [
     `Большая уютная квартира`,
     `Маленькая неуютная квартира`,
@@ -69,6 +70,15 @@ const randomShuffle = (getArray) => {
   return array;
 };
 
+const getDate = (dayShift = 0) => {
+  const MILLISECONDS_IN_DAY = 3600 * 24 * 1000;
+  const timeShift = MILLISECONDS_IN_DAY * dayShift;
+  const maxValue = new Date();
+  const minValue = maxValue - timeShift;
+
+  return getRandomValue(maxValue, minValue);
+};
+
 const generateEntity = () => {
   const pinValues = {
     x: getRandomValue(AnnouncerSettings.MAX_X, AnnouncerSettings.MIN_X),
@@ -96,7 +106,7 @@ const generateEntity = () => {
       x: pinValues.x,
       y: pinValues.y,
     },
-    date: ``,
+    date: getDate(AnnouncerSettings.DAY_SHIFT),
   };
 };
 

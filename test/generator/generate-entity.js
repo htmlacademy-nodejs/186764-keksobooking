@@ -112,5 +112,13 @@ describe(`Generate object of announcement`, () => {
     });
   });
 
+  describe(`Check date`, () => {
+    it(`should be number`, () => {
+      const testData = generateEntity();
+      console.log(testData.date);
+      assert.isNumber(testData.date);
+    });
+  });
+
 });
 
