@@ -37,6 +37,14 @@ const AnnouncerSettings = {
     `13:00`,
     `14:00`,
   ],
+  features: [
+    `wifi`,
+    `dishwasher`,
+    `parking`,
+    `washer`,
+    `elevator`,
+    `conditioner`,
+  ],
 };
 
 const generateRandomString = () => {
@@ -45,6 +53,15 @@ const generateRandomString = () => {
 
 const getRandomValue = (maxValue, minValue = 0) => {
   return Math.floor(Math.random() * (maxValue - minValue) + minValue);
+};
+
+const randomShuffle = (getArray) => {
+  const array = [...getArray];
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 };
 
 const generateEntity = () => {
@@ -66,7 +83,7 @@ const generateEntity = () => {
       guests: getRandomValue(AnnouncerSettings.MAX_GUESTS, AnnouncerSettings.MIN_GUESTS),
       checkin: AnnouncerSettings.checkins[getRandomValue(AnnouncerSettings.checkins.length)],
       checkout: AnnouncerSettings.checkouts[getRandomValue(AnnouncerSettings.checkouts.length)],
-      features: ``,
+      features: randomShuffle(AnnouncerSettings.features).slice(0, getRandomValue(AnnouncerSettings.features.length, 1)),
       description: ``,
       photos: ``,
     },

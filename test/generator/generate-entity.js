@@ -71,6 +71,12 @@ describe(`Generate object of announcement`, () => {
         assert.include(AnnouncerSettings.checkouts, testData.offer.checkout);
       }
     });
+    it(`should have correct format of features`, () => {
+      for (let i = 0; i < 50; i++) {
+        const testData = generateEntity();
+        assert.includeMembers(AnnouncerSettings.features, testData.offer.features);
+      }
+    });
   });
 
   describe(`Check location`, () => {
