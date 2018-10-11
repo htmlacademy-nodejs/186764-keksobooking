@@ -45,6 +45,11 @@ const AnnouncerSettings = {
     `elevator`,
     `conditioner`,
   ],
+  photos: [
+    `http://o0.github.io/assets/images/tokyo/hotel1.jpg`,
+    `http://o0.github.io/assets/images/tokyo/hotel2.jpg`,
+    `http://o0.github.io/assets/images/tokyo/hotel3.jpg`,
+  ],
 };
 
 const generateRandomString = () => {
@@ -85,12 +90,13 @@ const generateEntity = () => {
       checkout: AnnouncerSettings.checkouts[getRandomValue(AnnouncerSettings.checkouts.length)],
       features: randomShuffle(AnnouncerSettings.features).slice(0, getRandomValue(AnnouncerSettings.features.length, 1)),
       description: ``,
-      photos: ``,
+      photos: randomShuffle(AnnouncerSettings.photos),
     },
     location: {
       x: pinValues.x,
       y: pinValues.y,
     },
+    date: ``,
   };
 };
 

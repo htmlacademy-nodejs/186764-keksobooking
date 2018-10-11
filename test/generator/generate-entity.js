@@ -85,6 +85,10 @@ describe(`Generate object of announcement`, () => {
       const testData = generateEntity();
       assert.isEmpty(testData.offer.description);
     });
+    it(`photos shouldn't be empty`, () => {
+      const testData = generateEntity();
+      assert.isNotEmpty(testData.offer.photos);
+    });
   });
 
   describe(`Check location`, () => {
