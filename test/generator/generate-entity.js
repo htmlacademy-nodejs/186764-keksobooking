@@ -3,26 +3,28 @@
 const {assert} = require(`chai`);
 const {generateEntity, AnnouncerSettings} = require(`../../src/generator/generate-entity`);
 
-const data = generateEntity();
-
 describe(`Generate object of announcement`, () => {
   it(`should generate object`, () => {
-    assert.isObject(data);
+    const testData = generateEntity();
+    assert.isObject(testData);
   });
 
   describe(`Check author`, () => {
     it(`should have avatar key`, () => {
-      assert.exists(data.author);
+      const testData = generateEntity();
+      assert.exists(testData.author);
     });
     it(`should be correct format of avatar`, () => {
-      assert.isString(data.author.avatar);
-      assert.isNotEmpty(data.author.avatar);
+      const testData = generateEntity();
+      assert.isString(testData.author.avatar);
+      assert.isNotEmpty(testData.author.avatar);
     });
   });
 
   describe(`Check offer`, () => {
     it(`should have offer key`, () => {
-      assert.exists(data.offer);
+      const testData = generateEntity();
+      assert.exists(testData.offer);
     });
     it(`should have correct format of title`, () => {
       for (let i = 0; i < 100; i++) {
@@ -31,11 +33,13 @@ describe(`Generate object of announcement`, () => {
       }
     });
     it(`should have correct format of address`, () => {
-      assert.isString(data.offer.address);
-      assert.isNotEmpty(data.offer.address);
+      const testData = generateEntity();
+      assert.isString(testData.offer.address);
+      assert.isNotEmpty(testData.offer.address);
     });
     it(`should have correct format of locations `, () => {
-      assert.isNumber(data.offer.price);
+      const testData = generateEntity();
+      assert.isNumber(testData.offer.price);
     });
     it(`price should be in correct range`, () => {
       for (let i = 0; i < 300; i++) {
@@ -85,11 +89,13 @@ describe(`Generate object of announcement`, () => {
 
   describe(`Check location`, () => {
     it(`should have location key`, () => {
-      assert.exists(data.location);
+      const testData = generateEntity();
+      assert.exists(testData.location);
     });
     it(`should have correct format of locations `, () => {
-      assert.isNumber(data.location.x);
-      assert.isNumber(data.location.y);
+      const testData = generateEntity();
+      assert.isNumber(testData.location.x);
+      assert.isNumber(testData.location.y);
     });
     it(`pin should in correct range `, () => {
       for (let i = 0; i < 300; i++) {
