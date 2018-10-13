@@ -36,7 +36,7 @@ const generateEntity = () => {
 
   return {
     author: {
-      avatar: `https://robohash.org/${generateRandomString()}`
+      avatar: `${AnnouncerSettings.AVATAR_URL}${generateRandomString()}`
     },
     offer: {
       title: AnnouncerSettings.titles[getRandomValue(AnnouncerSettings.titles.length)],
