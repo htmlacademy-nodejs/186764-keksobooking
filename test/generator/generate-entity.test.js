@@ -1,7 +1,8 @@
 'use strict';
 
 const {assert} = require(`chai`);
-const {generateEntity, AnnouncerSettings} = require(`../../src/generator/generate-entity`);
+const generateEntity = require(`../../src/generator/generate-entity`);
+const AnnouncerSettings = require(`../../src/generator/announcer-settings`);
 
 describe(`Generate object of announcement`, () => {
   it(`should generate object`, () => {

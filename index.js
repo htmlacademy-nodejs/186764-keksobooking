@@ -12,7 +12,7 @@ const ExitStatus = {
 const HELP_COMMAND = `--help`;
 
 if (!args.length) {
-  console.log(`Привет пользователь! \nЭта программа будет запускать сервер «keksobooking». \nАвтор: Слава Милин.`);
+  console.log(`Привет, пользователь! \nЭта программа будет запускать сервер «keksobooking». \nАвтор: Слава Милин. \nДля генерации данных используйте ключ --generate `);
   process.exit(ExitStatus.success);
 }
 
