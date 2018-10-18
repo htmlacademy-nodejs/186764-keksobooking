@@ -6,6 +6,7 @@ const authorCommand = require(`./author`);
 const licenseCommand = require(`./license`);
 const descriptionCommand = require(`./description`);
 const generateCommand = require(`./generate`);
+const serverCommand = require(`./server`);
 
 const commands = {
   [versionCommand.name]: versionCommand,
@@ -14,6 +15,7 @@ const commands = {
   [licenseCommand.name]: licenseCommand,
   [descriptionCommand.name]: descriptionCommand,
   [generateCommand.name]: generateCommand,
+  [serverCommand.name]: serverCommand,
 };
 
 helpCommand.setAvailableCommands(commands);

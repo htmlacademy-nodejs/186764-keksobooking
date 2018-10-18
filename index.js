@@ -16,13 +16,15 @@ if (!args.length) {
   process.exit(ExitStatus.success);
 }
 
-for (const it of args) {
-  if (commands[it]) {
-    commands[it].execute();
-    continue;
+if (commands.hasOwnProperty(args[0])) {
+  if (args.length > 1) {
+    const values = args.slice(1).join(`, `);
+    commands[args[0]].execute(values);
+  } else {
+    commands[args[0]].execute();
   }
-
-  console.error(`Неизвестная команда ${it}.`);
+} else {
+  console.error(`Неизвестная команда ${args[0]}.`);
   commands[HELP_COMMAND].execute();
   process.exit(ExitStatus.error);
 }
