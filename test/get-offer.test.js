@@ -131,7 +131,16 @@ describe(`GET /api/:date`, () => {
     get(`/api/offers/hello`).
     set(`Accept`, `application/json`).
     expect(400).
-    expect(`Query should be string`).
+    expect(`Не корректный параметр "hello". Данные должны быть в числовом формате.`).
+    expect(`Content-Type`, /html/);
+  });
+
+  it(`should throw 404 error if result not found`, async () => {
+    return await request(app).
+    get(`/api/offers/1231`).
+    set(`Accept`, `application/json`).
+    expect(404).
+    expect(`Отель с такой датой не найден`).
     expect(`Content-Type`, /html/);
   });
 });

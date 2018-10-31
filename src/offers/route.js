@@ -6,8 +6,9 @@ const offersRouter = express.Router();
 const generateEntity = require(`../generator/generate-entity`);
 const offersCount = require(`../generator/announcer-settings`).OFFERS_COUNT;
 const BadRequest = require(`../../src/error/bad-request`);
+const NotFound = require(`../../src/error/not-found`);
 
-let offers = generateEntity();
+const offers = generateEntity();
 
 offersRouter.get(``, (req, res) => {
   if (req.query.skip && req.query.limit) {
@@ -46,8 +47,18 @@ offersRouter.get(``, (req, res) => {
 });
 
 offersRouter.get(`/:date`, (req, res) => {
-  const date = req.params.date;
-  const result = offers.filter((it) => it.date === +date);
+  const date = parseInt(req.params.date, 10);
+
+  if (isNaN(date)) {
+    throw new BadRequest(`Не корректный параметр "${req.params.date}". Данные должны быть в числовом формате.`);
+  }
+
+  const result = offers.filter((it) => it.date === date);
+
+  if (!result.length) {
+    throw new NotFound(`Отель с такой датой не найден`);
+  }
+
   return res.send(result);
 });
 
