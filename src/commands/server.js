@@ -1,68 +1,42 @@
 'use strict';
 
-const http = require(`http`);
-const url = require(`url`);
-const fs = require(`fs`);
-const mime = require(`mime-types`);
-const {promisify} = require(`util`);
-const readFile = promisify(fs.readFile);
+const express = require(`express`);
+const offersRouter = require(`../offers/route`);
 
 const ServerSettings = {
-  HOSTNAME: `127.0.0.1`,
   PORT: 3000,
-  STATIC_PATH: `${process.cwd()}/static`,
-  ENTRY_POINT: `/index.html`,
+  STATIC_FOLDER: `static`,
 };
 
-const StatusCodes = {
-  SERVER_ERROR: 500,
-  NOT_FOUND: 404,
-  ACCESS_DENIED: 403,
-  OK: 200,
-};
+// const StatusCodes = {
+//   SERVER_ERROR: 500,
+//   NOT_FOUND: 404,
+//   ACCESS_DENIED: 403,
+//   OK: 200,
+// };
 
-const startServer = (port = ServerSettings.PORT) => {
-  const server = http.createServer((req, res) => {
-    const relativePath = url.parse(req.url).pathname;
-    const absolutePath = relativePath === `/` ? `${ServerSettings.STATIC_PATH}${ServerSettings.ENTRY_POINT}` : `${ServerSettings.STATIC_PATH}${relativePath}`;
+const app = express();
+app.use(express.static(ServerSettings.STATIC_FOLDER));
 
-    (async () => {
-      try {
-        const file = await readFile(absolutePath);
-        const mimeType = mime.lookup(absolutePath);
+app.use(`/api/offers`, offersRouter);
 
-        res.statusCode = StatusCodes.OK;
-        res.statusMessage = http.STATUS_CODES[StatusCodes.OK];
-        res.setHeader(`content-type`, mimeType);
-        res.end(file);
-      } catch (e) {
-        res.writeHead(StatusCodes.NOT_FOUND, http.STATUS_CODES[StatusCodes.NOT_FOUND]);
-        res.end();
-      }
+app.use((err, req, res, _next) => {
+  if (err) {
+    // console.error(err);
+    res.status(err.code || 500).send(err.message);
+  }
+});
 
-    })().catch((e) => {
-      res.writeHead(StatusCodes.SERVER_ERROR, e.message, {
-        'content-type': `text/plain`
-      });
-      res.end(e.message);
-    });
-  });
-
-  server.listen(port, ServerSettings.HOSTNAME, (err) => {
-    if (err) {
-      console.error(err);
-      process.exit(1);
-    }
-
-    console.log(`Server running at http://${ServerSettings.HOSTNAME}:${port}`);
-  });
+const startServer = (port) => {
+  app.listen(port, () => console.log(`Сервер запущен: http://localhost:${port}`));
 };
 
 
 module.exports = {
   describe: `Стартует сервер на заданном порте. По умолчанию порт запуска - ${ServerSettings.PORT}`,
   name: `--server`,
-  execute(port) {
+  app,
+  execute(port = ServerSettings.PORT) {
     startServer(port);
-  }
+  },
 };

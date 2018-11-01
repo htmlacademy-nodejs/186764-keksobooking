@@ -12,6 +12,8 @@ const AnnouncerSettings = {
   MIN_GUESTS: 1,
   MAX_GUESTS: 10,
   DAY_SHIFT: 7,
+  OFFERS_COUNT: 20,
+  FIRST_DATE: 1540417718427,
   AVATAR_URL: `https://robohash.org/`,
   titles: [
     `Большая уютная квартира`,

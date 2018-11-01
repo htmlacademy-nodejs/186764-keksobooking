@@ -24,7 +24,7 @@ const getDate = (dayShift = 0) => {
   return getRandomValue(maxValue, minValue);
 };
 
-const generateEntity = () => {
+const generateOffer = () => {
   const pinValues = {
     x: getRandomValue(AnnouncerSettings.MAX_X, AnnouncerSettings.MIN_X),
     y: getRandomValue(AnnouncerSettings.MAX_Y, AnnouncerSettings.MIN_Y),
@@ -55,4 +55,18 @@ const generateEntity = () => {
   };
 };
 
-module.exports = generateEntity;
+const generateEntity = (count) => {
+  if (count < 0) {
+    return [];
+  }
+  const result = new Array(count).fill(``).map(() => generateOffer());
+
+  if (result.length) {
+    result[0].date = AnnouncerSettings.FIRST_DATE;
+  }
+
+  return result;
+
+};
+
+module.exports = (count = AnnouncerSettings.OFFERS_COUNT) => generateEntity(count);

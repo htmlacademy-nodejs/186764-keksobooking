@@ -17,9 +17,7 @@ const getNumber = () => {
       if (isNaN(number)) {
         return reject(`Введённое значение не является числом`);
       }
-      const objects = new Array(number).fill(``).map(() => {
-        return generateEntity();
-      });
+      const objects = generateEntity(number);
       console.log(`Сгенерирован массив с ${number} объектами`);
       return resolve(objects);
     });
