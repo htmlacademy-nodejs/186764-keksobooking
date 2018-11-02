@@ -7,6 +7,10 @@ const generateEntity = require(`../generator/generate-entity`);
 const offersCount = require(`../generator/announcer-settings`).OFFERS_COUNT;
 const BadRequest = require(`../../src/error/bad-request`);
 const NotFound = require(`../../src/error/not-found`);
+const multer = require(`multer`);
+
+const jsonParser = express.json();
+const upload = multer({storage: multer.memoryStorage()});
 
 const offers = generateEntity();
 
@@ -61,5 +65,18 @@ offersRouter.get(`/:date`, (req, res) => {
 
   return res.send(result);
 });
+
+offersRouter.post(``, jsonParser, upload.single(`avatar`), (req, res) => {
+  const body = req.body;
+  const avatar = req.file;
+
+  if (avatar) {
+    body.avatar = {
+      name: avatar.originalname
+    };
+  }
+  res.send(body);
+});
+
 
 module.exports = offersRouter;
