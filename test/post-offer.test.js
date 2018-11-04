@@ -2,47 +2,114 @@
 
 const request = require(`supertest`);
 const assert = require(`assert`);
-const AnnouncerSettings = require(`../src/generator/announcer-settings`);
 const {app} = require(`../src/commands/server`);
 
 describe(`POST api/offers`, () => {
-  it(`send offer as json`, async () => {
-    const sent = {
-      date: AnnouncerSettings.FIRST_DATE
-    };
+  const validData = {
+    name: `Pavel`,
+    title: `Маленькая квартирка рядом с парком`,
+    address: `570, 472`,
+    description: `Маленькая чистая квратира на краю парка. Без интернета, регистрации и СМС.`,
+    price: 30000,
+    type: `flat`,
+    rooms: 1,
+    guests: 1,
+    checkin: `9:00`,
+    checkout: `7:00`,
+    features: [`elevator`, `conditioner`]
+  };
 
+  const invalidData = {
+    name: `Pavel`,
+    title: `Маленькая квартирка`,
+    address: `dom`,
+    description: `Маленькая чистая квратира на краю парка. Без интернета, регистрации и СМС.`,
+    price: 0,
+    type: `flats`,
+    rooms: 1001,
+    guests: 1,
+    checkin: `nine'o'clock`,
+    checkout: `seven'o'clock`,
+    features: [`elevator`, `elevator`]
+  };
+
+  const invalidAnswers = [
+    `Длинна заголовка должна быть от 30 до 140 символов`,
+    `Неизвестный тип flats`,
+    `Цена должна быть в диапозоне от 1 до 100 000`,
+    `Адрес должен быть в формате координат: x, y`,
+    `Дата въезда должна быть в формате HH:mm`,
+    `Дата выезда должна быть в формате HH:mm`,
+    `Количество комнат должно быть от 1 до 1000`
+  ];
+
+  const withoutRequireData = {
+    name: `Pavel`,
+    description: `Маленькая чистая квратира на краю парка. Без интернета, регистрации и СМС.`,
+    guests: 1,
+    features: [`elevator`, `conditioner`]
+  };
+
+  const withoutRequireAnswers = [
+    `title - обязательный пункт для заполнения`,
+    `type - обязательный пункт для заполнения`,
+    `price - обязательный пункт для заполнения`,
+    `address - обязательный пункт для заполнения`,
+    `checkin - обязательный пункт для заполнения`,
+    `checkout - обязательный пункт для заполнения`,
+    `rooms - обязательный пункт для заполнения`,
+  ];
+
+  it(`send offer as json`, async () => {
     const response = await request(app).
       post(`/api/offers`).
-      send(sent).
+      send(validData).
       set(`Accept`, `application/json`).
       set(`Content-Type`, `application/json`).
       expect(200).
       expect(`Content-Type`, /json/);
 
     const offer = response.body;
-    assert.deepEqual(offer, sent);
+    assert.deepEqual(offer, validData);
   });
 
   it(`send offer as multipart/form-data`, async () => {
-    const offerDate = AnnouncerSettings.FIRST_DATE;
-
     const response = await request(app).
       post(`/api/offers`).
-      field(`date`, offerDate).
+      field(`title`, validData.title).
+      field(`name`, validData.name).
+      field(`address`, validData.address).
+      field(`description`, validData.description).
+      field(`price`, validData.price).
+      field(`type`, validData.type).
+      field(`rooms`, validData.rooms).
+      field(`guests`, validData.guests).
+      field(`checkin`, validData.checkin).
+      field(`checkout`, validData.checkout).
+      field(`features`, validData.features).
       set(`Accept`, `application/json`).
       set(`Content-Type`, `multipart/form-data`).
       expect(200).
       expect(`Content-Type`, /json/);
 
-    const date = response.body;
-    assert.deepEqual(date, {date: offerDate});
+    const offer = response.body;
+    assert.deepEqual(offer, validData);
   });
 
   it(`send offer with avatar as multipart/form-data`, async () => {
-    const offerDate = AnnouncerSettings.FIRST_DATE;
     const response = await request(app).
       post(`/api/offers`).
-      field(`date`, offerDate).
+      field(`title`, validData.title).
+      field(`name`, validData.name).
+      field(`address`, validData.address).
+      field(`description`, validData.description).
+      field(`price`, validData.price).
+      field(`type`, validData.type).
+      field(`rooms`, validData.rooms).
+      field(`guests`, validData.guests).
+      field(`checkin`, validData.checkin).
+      field(`checkout`, validData.checkout).
+      field(`features`, validData.features).
       attach(`avatar`, `test/img/default.png`).
       set(`Accept`, `application/json`).
       set(`Content-Type`, `multipart/form-data`).
@@ -50,11 +117,36 @@ describe(`POST api/offers`, () => {
       expect(`Content-Type`, /json/);
 
     const offer = response.body;
-    assert.deepEqual(offer, {
-      date: offerDate,
+    assert.deepEqual(offer, Object.assign({}, validData, {
       avatar: {
         name: `default.png`
       }
-    });
+    }));
+  });
+
+  it(`should validate json format data`, async () => {
+    const response = await request(app).
+      post(`/api/offers`).
+      send(invalidData).
+      set(`Accept`, `application/json`).
+      set(`Content-Type`, `application/json`).
+      expect(400).
+      expect(`Content-Type`, /json/);
+
+    const answers = response.body;
+    assert.deepEqual(answers, invalidAnswers);
+  });
+
+  it(`should validate required data`, async () => {
+    const response = await request(app).
+    post(`/api/offers`).
+    send(withoutRequireData).
+    set(`Accept`, `application/json`).
+    set(`Content-Type`, `application/json`).
+    expect(400).
+    expect(`Content-Type`, /json/);
+
+    const answers = response.body;
+    assert.deepEqual(answers, withoutRequireAnswers);
   });
 });
