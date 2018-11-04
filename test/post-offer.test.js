@@ -20,17 +20,17 @@ describe(`POST api/offers`, () => {
   };
 
   const invalidData = {
-    name: `Pavel`,
     title: `Маленькая квартирка`,
-    address: `dom`,
-    description: `Маленькая чистая квратира на краю парка. Без интернета, регистрации и СМС.`,
-    price: 0,
     type: `flats`,
-    rooms: 1001,
-    guests: 1,
+    price: 0,
+    address: `dom`,
     checkin: `nine'o'clock`,
     checkout: `seven'o'clock`,
-    features: [`elevator`, `elevator`]
+    rooms: 1001,
+    features: [`elevator`, `feature`],
+    name: 123,
+    description: `Маленькая чистая квратира на краю парка. Без интернета, регистрации и СМС.`,
+    guests: 1
   };
 
   const invalidAnswers = [
@@ -40,7 +40,9 @@ describe(`POST api/offers`, () => {
     `Адрес должен быть в формате координат: x, y`,
     `Дата въезда должна быть в формате HH:mm`,
     `Дата выезда должна быть в формате HH:mm`,
-    `Количество комнат должно быть от 1 до 1000`
+    `Количество комнат должно быть от 1 до 1000`,
+    `Неизвестная особенность 'feature'`,
+    `Имя должно быть в текстовом формате`
   ];
 
   const withoutRequireData = {

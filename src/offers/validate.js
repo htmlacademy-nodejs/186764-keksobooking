@@ -15,6 +15,14 @@ const validateSettings = {
     `house`,
     `bungalo`,
     `palace`
+  ],
+  FEATURES: [
+    `dishwasher`,
+    `elevator`,
+    `conditioner`,
+    `parking`,
+    `washer`,
+    `wifi`
   ]
 };
 
@@ -99,6 +107,25 @@ const validate = (data) => {
     errors.push(requiredError(`rooms`));
   } else if (data.rooms < validateSettings.MIN_ROOMS || data.rooms > validateSettings.MAX_ROOMS) {
     errors.push(`Количество комнат должно быть от 1 до 1000`);
+  }
+
+  if (data.features) {
+    if (!(Array.isArray(data.features))) {
+      errors.push(`Данные должны передаваться массивом`);
+    }
+
+    for (const it of data.features) {
+      if (!validateSettings.FEATURES.includes(it)) {
+        errors.push(`Неизвестная особенность '${it}'`);
+        break;
+      }
+    }
+  }
+
+  if (data.name) {
+    if (typeof data.name !== `string`) {
+      errors.push(`Имя должно быть в текстовом формате`);
+    }
   }
 
 
