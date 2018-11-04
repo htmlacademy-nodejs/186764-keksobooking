@@ -8,6 +8,8 @@ const offersCount = require(`../generator/announcer-settings`).OFFERS_COUNT;
 const BadRequest = require(`../../src/error/bad-request`);
 const NotFound = require(`../../src/error/not-found`);
 const multer = require(`multer`);
+const validate = require(`./validate`);
+const NotValid = require(`../error/not-valid`);
 
 const jsonParser = express.json();
 const upload = multer({storage: multer.memoryStorage()});
@@ -75,7 +77,14 @@ offersRouter.post(``, jsonParser, upload.single(`avatar`), (req, res) => {
       name: avatar.originalname
     };
   }
-  res.send(body);
+  res.send(validate(body));
+});
+
+offersRouter.use((err, req, res, _next) => {
+  if (err instanceof NotValid) {
+    return res.status(err.code).json(err.errors);
+  }
+  return _next(err);
 });
 
 
