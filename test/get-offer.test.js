@@ -2,9 +2,14 @@
 
 const request = require(`supertest`);
 const assert = require(`assert`);
+const express = require(`express`);
 const AnnouncerSettings = require(`../src/generator/announcer-settings`);
-const {app} = require(`../src/commands/server`);
 
+const app = express();
+const offersStoreMock = require(`./mock/offers-store-mock`);
+const offersRoute = require(`../src/offers/route`)(offersStoreMock);
+
+app.use(`/api/offers`, offersRoute);
 
 describe(`GET api/offers`, () => {
   it(`should get all offers`, async () => {
