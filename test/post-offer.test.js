@@ -2,7 +2,15 @@
 
 const request = require(`supertest`);
 const assert = require(`assert`);
-const {app} = require(`../src/commands/server`);
+const express = require(`express`);
+
+const offersStoreMock = require(`./mock/offers-store-mock`);
+const imagesStoreMock = require(`./mock/images-store-mock`);
+const offersRoute = require(`../src/offers/route`)(offersStoreMock, imagesStoreMock);
+
+const app = express();
+
+app.use(`/api/offers`, offersRoute);
 
 describe(`POST api/offers`, () => {
   const validData = {
