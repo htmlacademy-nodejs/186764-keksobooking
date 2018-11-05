@@ -21,7 +21,7 @@ class OfferStore {
   }
 
   async save(offerData) {
-    return await (this.collection).insertOne(offerData);
+    return (await this.collection).insertOne(offerData);
   }
 }
 
