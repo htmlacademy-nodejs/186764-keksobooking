@@ -9,15 +9,14 @@ const NotFound = require(`../../src/error/not-found`);
 const multer = require(`multer`);
 const validate = require(`./validate`);
 const NotValid = require(`../error/not-valid`);
-// const offerStore = require(`./store`);
 
 const jsonParser = express.json();
 const upload = multer({storage: multer.memoryStorage()});
 
 const offers = generateEntity();
 
-const toPage = (data, skip, limit) => {
-  return [...data].splice(skip, limit);
+const toPage = async (cursor, skip = 0, limit = offersCount) => {
+  return await cursor.skip(skip).limit(limit).toArray();
 };
 
 const asyncMiddleware = (fn) => (req, res, next) => fn(req, res, next).catch(next);
@@ -30,7 +29,7 @@ offersRouter.get(``, asyncMiddleware(async (req, res) => {
     throw new BadRequest(`Неверное значение skip или limit`);
   }
 
-  return res.send(toPage(offers, skip, limit));
+  return res.send(await toPage(await offersRouter.offerStore.getAllOffers(), skip, limit));
 }));
 
 offersRouter.get(`/:date`, (req, res) => {
@@ -69,4 +68,7 @@ offersRouter.use((err, req, res, _next) => {
 });
 
 
-module.exports = offersRouter;
+module.exports = (offerStore) => {
+  offersRouter.offerStore = offerStore;
+  return offersRouter;
+};
