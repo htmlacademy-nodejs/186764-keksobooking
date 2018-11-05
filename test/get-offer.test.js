@@ -70,27 +70,18 @@ describe(`GET api/offers`, () => {
     expect(`Content-Type`, /json/);
 
     const offers = responce.body;
-    assert.equal(offers.length, 6);
+    assert.equal(offers.length, 10);
   });
 
-  it(`should process negative skip and limit parameters`, async () => {
+  it(`should process big limit parameter`, async () => {
     const responce = await request(app).
-    get(`/api/offers?skip=4&limit=2`).
+    get(`/api/offers?limit=${AnnouncerSettings.OFFERS_COUNT + 1}`).
     set(`Accept`, `application/json`).
     expect(200).
     expect(`Content-Type`, /json/);
 
     const offers = responce.body;
-    assert.equal(offers.length, 0);
-  });
-
-  it(`should send error if to much limit`, async () => {
-    return await request(app).
-    get(`/api/offers?limit=${AnnouncerSettings.OFFERS_COUNT + 1}`).
-    set(`Accept`, `application/json`).
-    expect(400).
-    expect(`Too much limit`).
-    expect(`Content-Type`, /html/);
+    assert.equal(offers.length, 20);
   });
 
   it(`query should be number`, async () => {
@@ -98,7 +89,7 @@ describe(`GET api/offers`, () => {
     get(`/api/offers?limit=hello`).
     set(`Accept`, `application/json`).
     expect(400).
-    expect(`Query should be string`).
+    expect(`Неверное значение skip или limit`).
     expect(`Content-Type`, /html/);
   });
 
@@ -107,7 +98,7 @@ describe(`GET api/offers`, () => {
     get(`/api/offers?skip=hello`).
     set(`Accept`, `application/json`).
     expect(400).
-    expect(`Query should be string`).
+    expect(`Неверное значение skip или limit`).
     expect(`Content-Type`, /html/);
   });
 });

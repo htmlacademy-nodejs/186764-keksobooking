@@ -1,8 +1,7 @@
 'use strict';
 
 const express = require(`express`);
-// eslint-disable-next-line new-cap
-const offersRouter = express.Router();
+const offersRouter = new express.Router();
 const generateEntity = require(`../generator/generate-entity`);
 const offersCount = require(`../generator/announcer-settings`).OFFERS_COUNT;
 const BadRequest = require(`../../src/error/bad-request`);
@@ -10,47 +9,29 @@ const NotFound = require(`../../src/error/not-found`);
 const multer = require(`multer`);
 const validate = require(`./validate`);
 const NotValid = require(`../error/not-valid`);
+// const offerStore = require(`./store`);
 
 const jsonParser = express.json();
 const upload = multer({storage: multer.memoryStorage()});
 
 const offers = generateEntity();
 
-offersRouter.get(``, (req, res) => {
-  if (req.query.skip && req.query.limit) {
-    return res.send([...offers].splice(0, req.query.limit).splice(req.query.skip));
+const toPage = (data, skip, limit) => {
+  return [...data].splice(skip, limit);
+};
+
+const asyncMiddleware = (fn) => (req, res, next) => fn(req, res, next).catch(next);
+
+offersRouter.get(``, asyncMiddleware(async (req, res) => {
+  const skip = parseInt(req.query.skip || 0, 10);
+  const limit = parseInt(req.query.limit || offersCount, 10);
+
+  if (isNaN(skip) || isNaN(limit)) {
+    throw new BadRequest(`Неверное значение skip или limit`);
   }
 
-  if (req.query.skip) {
-    const skip = parseInt(req.query.skip, 10);
-
-    if (isNaN(skip)) {
-      throw new BadRequest(`Query should be string`);
-    }
-
-    return res.send([...offers].splice(skip));
-  }
-
-  if (req.query.limit) {
-    const limit = parseInt(req.query.limit, 10);
-
-    if (isNaN(limit)) {
-      throw new BadRequest(`Query should be string`);
-    }
-
-    if (limit > offersCount) {
-      throw new BadRequest(`Too much limit`);
-    }
-
-    if (limit < 1) {
-      return res.send([]);
-    }
-
-    return res.send([...offers].splice(0, limit));
-  }
-
-  return res.send(offers);
-});
+  return res.send(toPage(offers, skip, limit));
+}));
 
 offersRouter.get(`/:date`, (req, res) => {
   const date = parseInt(req.params.date, 10);
