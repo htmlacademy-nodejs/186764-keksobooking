@@ -6,6 +6,8 @@ const offersCount = require(`../generator/announcer-settings`).OFFERS_COUNT;
 const BadRequest = require(`../../src/error/bad-request`);
 const NotFound = require(`../../src/error/not-found`);
 const multer = require(`multer`);
+const toStream = require(`buffer-to-stream`);
+
 const validate = require(`./validate`);
 const NotValid = require(`../error/not-valid`);
 
@@ -45,7 +47,7 @@ offersRouter.get(`/:date`, asyncMiddleware(async (req, res) => {
   return res.send(result);
 }));
 
-offersRouter.post(``, jsonParser, upload.single(`avatar`), (req, res) => {
+offersRouter.post(``, jsonParser, upload.single(`avatar`), asyncMiddleware(async (req, res) => {
   const body = req.body;
   const avatar = req.file;
 
@@ -54,8 +56,17 @@ offersRouter.post(``, jsonParser, upload.single(`avatar`), (req, res) => {
       name: avatar.originalname
     };
   }
-  res.send(validate(body));
-});
+
+  const validated = validate(body);
+
+  const result = await offersRouter.offerStore.save(validated);
+  const insertId = result.insertId;
+
+  if (avatar) {
+    await offersRouter.imageStore.save(insertId, toStream(avatar.buffer));
+  }
+  res.send(validate(validated));
+}));
 
 offersRouter.use((err, req, res, _next) => {
   if (err instanceof NotValid) {
@@ -72,7 +83,8 @@ offersRouter.use((err, req, res, _next) => {
 });
 
 
-module.exports = (offerStore) => {
+module.exports = (offerStore, imagesStore) => {
   offersRouter.offerStore = offerStore;
+  offersRouter.imageStore = imagesStore;
   return offersRouter;
 };

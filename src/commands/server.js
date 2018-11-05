@@ -2,7 +2,8 @@
 
 const express = require(`express`);
 const offersStore = require(`../offers/store`);
-const offersRouter = require(`../offers/route`)(offersStore);
+const imageStore = require(`../images/store`);
+const offersRouter = require(`../offers/route`)(offersStore, imageStore);
 
 const ServerSettings = {
   PORT: 3000,
