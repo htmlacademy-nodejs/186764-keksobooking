@@ -1,74 +1,53 @@
 'use strict';
 
 const express = require(`express`);
-// eslint-disable-next-line new-cap
-const offersRouter = express.Router();
-const generateEntity = require(`../generator/generate-entity`);
+const offersRouter = new express.Router();
 const offersCount = require(`../generator/announcer-settings`).OFFERS_COUNT;
 const BadRequest = require(`../../src/error/bad-request`);
 const NotFound = require(`../../src/error/not-found`);
 const multer = require(`multer`);
+const toStream = require(`buffer-to-stream`);
+
 const validate = require(`./validate`);
 const NotValid = require(`../error/not-valid`);
 
 const jsonParser = express.json();
 const upload = multer({storage: multer.memoryStorage()});
 
-const offers = generateEntity();
+const toPage = async (cursor, skip = 0, limit = offersCount) => {
+  return await cursor.skip(skip).limit(limit).toArray();
+};
 
-offersRouter.get(``, (req, res) => {
-  if (req.query.skip && req.query.limit) {
-    return res.send([...offers].splice(0, req.query.limit).splice(req.query.skip));
+const asyncMiddleware = (fn) => (req, res, next) => fn(req, res, next).catch(next);
+
+offersRouter.get(``, asyncMiddleware(async (req, res) => {
+  const skip = parseInt(req.query.skip || 0, 10);
+  const limit = parseInt(req.query.limit || offersCount, 10);
+
+  if (isNaN(skip) || isNaN(limit)) {
+    throw new BadRequest(`Неверное значение skip или limit`);
   }
 
-  if (req.query.skip) {
-    const skip = parseInt(req.query.skip, 10);
+  return res.send(await toPage(await offersRouter.offerStore.getAllOffers(), skip, limit));
+}));
 
-    if (isNaN(skip)) {
-      throw new BadRequest(`Query should be string`);
-    }
-
-    return res.send([...offers].splice(skip));
-  }
-
-  if (req.query.limit) {
-    const limit = parseInt(req.query.limit, 10);
-
-    if (isNaN(limit)) {
-      throw new BadRequest(`Query should be string`);
-    }
-
-    if (limit > offersCount) {
-      throw new BadRequest(`Too much limit`);
-    }
-
-    if (limit < 1) {
-      return res.send([]);
-    }
-
-    return res.send([...offers].splice(0, limit));
-  }
-
-  return res.send(offers);
-});
-
-offersRouter.get(`/:date`, (req, res) => {
+offersRouter.get(`/:date`, asyncMiddleware(async (req, res) => {
   const date = parseInt(req.params.date, 10);
 
   if (isNaN(date)) {
     throw new BadRequest(`Не корректный параметр "${req.params.date}". Данные должны быть в числовом формате.`);
   }
 
-  const result = offers.filter((it) => it.date === date);
+  const result = await offersRouter.offerStore.getOffer(date);
 
-  if (!result.length) {
+  if (result.length === 0) {
     throw new NotFound(`Отель с такой датой не найден`);
   }
 
   return res.send(result);
-});
+}));
 
-offersRouter.post(``, jsonParser, upload.single(`avatar`), (req, res) => {
+offersRouter.post(``, jsonParser, upload.single(`avatar`), asyncMiddleware(async (req, res) => {
   const body = req.body;
   const avatar = req.file;
 
@@ -77,8 +56,17 @@ offersRouter.post(``, jsonParser, upload.single(`avatar`), (req, res) => {
       name: avatar.originalname
     };
   }
-  res.send(validate(body));
-});
+
+  const validated = validate(body);
+
+  const result = await offersRouter.offerStore.save(validated);
+  const insertId = result.insertId;
+
+  if (avatar) {
+    await offersRouter.imageStore.save(insertId, toStream(avatar.buffer));
+  }
+  res.send(validate(validated));
+}));
 
 offersRouter.use((err, req, res, _next) => {
   if (err instanceof NotValid) {
@@ -87,5 +75,16 @@ offersRouter.use((err, req, res, _next) => {
   return _next(err);
 });
 
+offersRouter.use((err, req, res, _next) => {
+  if (err) {
+    // console.error(err);
+    res.status(err.code || 500).send(err.message);
+  }
+});
 
-module.exports = offersRouter;
+
+module.exports = (offerStore, imagesStore) => {
+  offersRouter.offerStore = offerStore;
+  offersRouter.imageStore = imagesStore;
+  return offersRouter;
+};

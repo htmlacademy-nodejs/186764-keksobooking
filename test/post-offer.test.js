@@ -2,7 +2,15 @@
 
 const request = require(`supertest`);
 const assert = require(`assert`);
-const {app} = require(`../src/commands/server`);
+const express = require(`express`);
+
+const offersStoreMock = require(`./mock/offers-store-mock`);
+const imagesStoreMock = require(`./mock/images-store-mock`);
+const offersRoute = require(`../src/offers/route`)(offersStoreMock, imagesStoreMock);
+
+const app = express();
+
+app.use(`/api/offers`, offersRoute);
 
 describe(`POST api/offers`, () => {
   const validData = {
@@ -72,7 +80,9 @@ describe(`POST api/offers`, () => {
       expect(`Content-Type`, /json/);
 
     const offer = response.body;
-    assert.deepEqual(offer, validData);
+    const testData = Object.assign({}, validData);
+    testData.date = offer.date;
+    assert.deepEqual(offer, testData);
   });
 
   it(`send offer as multipart/form-data`, async () => {
@@ -95,7 +105,9 @@ describe(`POST api/offers`, () => {
       expect(`Content-Type`, /json/);
 
     const offer = response.body;
-    assert.deepEqual(offer, validData);
+    const testData = Object.assign({}, validData);
+    testData.date = offer.date;
+    assert.deepEqual(offer, testData);
   });
 
   it(`send offer with avatar as multipart/form-data`, async () => {
@@ -119,11 +131,13 @@ describe(`POST api/offers`, () => {
       expect(`Content-Type`, /json/);
 
     const offer = response.body;
-    assert.deepEqual(offer, Object.assign({}, validData, {
+    const testData = Object.assign({}, validData, {
       avatar: {
         name: `default.png`
       }
-    }));
+    });
+    testData.date = offer.date;
+    assert.deepEqual(offer, testData);
   });
 
   it(`should validate json format data`, async () => {
