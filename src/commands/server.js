@@ -14,13 +14,6 @@ app.use(express.static(ServerSettings.STATIC_FOLDER));
 
 app.use(`/api/offers`, offersRouter);
 
-app.use((err, req, res, _next) => {
-  if (err) {
-    // console.error(err);
-    res.status(err.code || 500).send(err.message);
-  }
-});
-
 const startServer = (port) => {
   app.listen(port, () => console.log(`Сервер запущен: http://localhost:${port}`));
 };

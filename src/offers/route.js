@@ -67,6 +67,13 @@ offersRouter.use((err, req, res, _next) => {
   return _next(err);
 });
 
+offersRouter.use((err, req, res, _next) => {
+  if (err) {
+    // console.error(err);
+    res.status(err.code || 500).send(err.message);
+  }
+});
+
 
 module.exports = (offerStore) => {
   offersRouter.offerStore = offerStore;
