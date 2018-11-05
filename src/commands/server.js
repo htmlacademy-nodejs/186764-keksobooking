@@ -1,19 +1,13 @@
 'use strict';
 
 const express = require(`express`);
-const offersRouter = require(`../offers/route`);
+const offersStore = require(`../offers/store`);
+const offersRouter = require(`../offers/route`)(offersStore);
 
 const ServerSettings = {
   PORT: 3000,
   STATIC_FOLDER: `static`,
 };
-
-// const StatusCodes = {
-//   SERVER_ERROR: 500,
-//   NOT_FOUND: 404,
-//   ACCESS_DENIED: 403,
-//   OK: 200,
-// };
 
 const app = express();
 app.use(express.static(ServerSettings.STATIC_FOLDER));
