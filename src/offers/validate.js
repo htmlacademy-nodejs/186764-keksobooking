@@ -132,6 +132,9 @@ const validate = (data) => {
   if (errors.length) {
     throw new NotValid(errors);
   }
+
+  const date = Date.now();
+  data.date = date;
   return data;
 };
 
