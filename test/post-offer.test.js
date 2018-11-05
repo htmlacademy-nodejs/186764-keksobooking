@@ -80,7 +80,9 @@ describe(`POST api/offers`, () => {
       expect(`Content-Type`, /json/);
 
     const offer = response.body;
-    assert.deepEqual(offer, validData);
+    const testData = Object.assign({}, validData);
+    testData.date = offer.date;
+    assert.deepEqual(offer, testData);
   });
 
   it(`send offer as multipart/form-data`, async () => {
@@ -103,7 +105,9 @@ describe(`POST api/offers`, () => {
       expect(`Content-Type`, /json/);
 
     const offer = response.body;
-    assert.deepEqual(offer, validData);
+    const testData = Object.assign({}, validData);
+    testData.date = offer.date;
+    assert.deepEqual(offer, testData);
   });
 
   it(`send offer with avatar as multipart/form-data`, async () => {
@@ -127,11 +131,13 @@ describe(`POST api/offers`, () => {
       expect(`Content-Type`, /json/);
 
     const offer = response.body;
-    assert.deepEqual(offer, Object.assign({}, validData, {
+    const testData = Object.assign({}, validData, {
       avatar: {
         name: `default.png`
       }
-    }));
+    });
+    testData.date = offer.date;
+    assert.deepEqual(offer, testData);
   });
 
   it(`should validate json format data`, async () => {
