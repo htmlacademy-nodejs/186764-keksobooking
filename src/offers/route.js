@@ -2,7 +2,6 @@
 
 const express = require(`express`);
 const offersRouter = new express.Router();
-const generateEntity = require(`../generator/generate-entity`);
 const offersCount = require(`../generator/announcer-settings`).OFFERS_COUNT;
 const BadRequest = require(`../../src/error/bad-request`);
 const NotFound = require(`../../src/error/not-found`);
@@ -12,8 +11,6 @@ const NotValid = require(`../error/not-valid`);
 
 const jsonParser = express.json();
 const upload = multer({storage: multer.memoryStorage()});
-
-const offers = generateEntity();
 
 const toPage = async (cursor, skip = 0, limit = offersCount) => {
   return await cursor.skip(skip).limit(limit).toArray();
@@ -32,21 +29,21 @@ offersRouter.get(``, asyncMiddleware(async (req, res) => {
   return res.send(await toPage(await offersRouter.offerStore.getAllOffers(), skip, limit));
 }));
 
-offersRouter.get(`/:date`, (req, res) => {
+offersRouter.get(`/:date`, asyncMiddleware(async (req, res) => {
   const date = parseInt(req.params.date, 10);
 
   if (isNaN(date)) {
     throw new BadRequest(`Не корректный параметр "${req.params.date}". Данные должны быть в числовом формате.`);
   }
 
-  const result = offers.filter((it) => it.date === date);
+  const result = await offersRouter.offerStore.getOffer(date);
 
   if (!result.length) {
     throw new NotFound(`Отель с такой датой не найден`);
   }
 
   return res.send(result);
-});
+}));
 
 offersRouter.post(``, jsonParser, upload.single(`avatar`), (req, res) => {
   const body = req.body;

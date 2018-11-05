@@ -11,6 +11,10 @@ class OffersStoreMock {
   async getAllOffers() {
     return new Cursor(this.data);
   }
+
+  async getOffer(date) {
+    return this.data.filter((it) => it.date === date);
+  }
 }
 
 module.exports = new OffersStoreMock(generateEntity());
