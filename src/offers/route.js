@@ -40,7 +40,7 @@ offersRouter.get(`/:date`, asyncMiddleware(async (req, res) => {
 
   const result = await offersRouter.offerStore.getOffer(date);
 
-  if (!result.length) {
+  if (!result) {
     throw new NotFound(`Отель с такой датой не найден`);
   }
 

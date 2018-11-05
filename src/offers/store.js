@@ -20,6 +20,10 @@ class OfferStore {
     return (await this.collection).find();
   }
 
+  async getOffer(date) {
+    return (await this.collection).findOne({date});
+  }
+
   async save(offerData) {
     return (await this.collection).insertOne(offerData);
   }
