@@ -7,6 +7,7 @@ const BadRequest = require(`../../src/error/bad-request`);
 const NotFound = require(`../../src/error/not-found`);
 const multer = require(`multer`);
 const toStream = require(`buffer-to-stream`);
+const StatusCode = require(`./src/util/status-code`);
 
 const validate = require(`./validate`);
 const NotValid = require(`../error/not-valid`);
@@ -106,8 +107,7 @@ offersRouter.use((err, req, res, _next) => {
 
 offersRouter.use((err, req, res, _next) => {
   if (err) {
-    // console.error(err);
-    res.status(err.code || 500).send(err.message);
+    res.status(err.code || StatusCode.SEVER_ERROR).send(err.message);
   }
 });
 
