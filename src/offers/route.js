@@ -7,7 +7,8 @@ const BadRequest = require(`../../src/error/bad-request`);
 const NotFound = require(`../../src/error/not-found`);
 const multer = require(`multer`);
 const toStream = require(`buffer-to-stream`);
-const StatusCode = require(`./src/util/status-code`);
+const StatusCode = require(`../util/status-code`);
+const logger = require(`../util/logger`);
 
 const validate = require(`./validate`);
 const NotValid = require(`../error/not-valid`);
@@ -90,10 +91,10 @@ offersRouter.get(`/:date/avatar`, asyncMiddleware(async (req, res) => {
   res.header(`Content-Type`, `image/jpg`);
   res.header(`Content-Length`, result.info.length);
 
-  res.on(`error`, (e) => console.error(e));
+  res.on(`error`, (e) => logger.error(e));
   res.on(`end`, () => res.end());
   const stream = result.stream;
-  stream.on(`error`, (e) => console.error(e));
+  stream.on(`error`, (e) => logger.error(e));
   stream.on(`end`, () => res.end());
   stream.pipe(res);
 }));

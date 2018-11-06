@@ -3,7 +3,8 @@
 const readline = require(`readline`);
 const generateEntity = require(`../generator/generate-entity`);
 const fs = require(`fs`);
-const PROCESS_CODES = require(`../util/process-codes`);
+const ProcessCode = require(`../util/process-code`);
+const logger = require(`../util/logger`);
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -91,8 +92,8 @@ module.exports = {
     }).then(() => {
       return rl.close();
     }).catch((error) => {
-      console.error(error);
-      process.exit(PROCESS_CODES.ERROR_EXIT);
+      logger.error(error);
+      process.exit(ProcessCode.ERROR_EXIT);
     });
   }
 };

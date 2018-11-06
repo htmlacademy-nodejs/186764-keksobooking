@@ -1,6 +1,6 @@
 'use strict';
 
-const StatusCode = require(`./src/util/status-code`);
+const StatusCode = require(`../util/status-code`);
 
 module.exports = class NotValid extends Error {
   constructor(errors) {
