@@ -127,7 +127,15 @@ const validate = (data) => {
   }
 
   const date = Date.now();
+
+  const address = data.address.split(`, `);
+  const location = {
+    x: parseInt(address[0], 10),
+    y: parseInt(address[1], 10)
+  };
+
   data.date = date;
+  data.location = location;
   return data;
 };
 

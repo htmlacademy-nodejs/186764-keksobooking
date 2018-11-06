@@ -82,6 +82,7 @@ describe(`POST api/offers`, () => {
     const offer = response.body;
     const testData = Object.assign({}, validData);
     testData.date = offer.date;
+    testData.location = offer.location;
     assert.deepEqual(offer, testData);
   });
 
@@ -107,6 +108,7 @@ describe(`POST api/offers`, () => {
     const offer = response.body;
     const testData = Object.assign({}, validData);
     testData.date = offer.date;
+    testData.location = offer.location;
     assert.deepEqual(offer, testData);
   });
 
@@ -137,6 +139,7 @@ describe(`POST api/offers`, () => {
       }
     });
     testData.date = offer.date;
+    testData.location = offer.location;
     assert.deepEqual(offer, testData);
   });
 
