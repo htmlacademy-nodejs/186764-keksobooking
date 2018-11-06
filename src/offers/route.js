@@ -68,6 +68,35 @@ offersRouter.post(``, jsonParser, upload.single(`avatar`), asyncMiddleware(async
   res.send(validate(validated));
 }));
 
+offersRouter.get(`/:date/avatar`, asyncMiddleware(async (req, res) => {
+  const offerDate = req.params.date;
+  if (!offerDate) {
+    throw new BadRequest(`В запросе не указана дата`);
+  }
+
+  const date = parseInt(offerDate, 10);
+  const found = await offersRouter.offerStore.getOffer(date);
+
+  if (!found) {
+    throw new NotFound(`Отель с датой "${offerDate}" не найден`);
+  }
+
+  const result = await offersRouter.imageStore.get(found._id);
+  if (!result) {
+    throw new NotFound(`Фотография отеля с датой"${offerDate}" не найдена`);
+  }
+
+  res.header(`Content-Type`, `image/jpg`);
+  res.header(`Content-Length`, result.info.length);
+
+  res.on(`error`, (e) => console.error(e));
+  res.on(`end`, () => res.end());
+  const stream = result.stream;
+  stream.on(`error`, (e) => console.error(e));
+  stream.on(`end`, () => res.end());
+  stream.pipe(res);
+}));
+
 offersRouter.use((err, req, res, _next) => {
   if (err instanceof NotValid) {
     return res.status(err.code).json(err.errors);
