@@ -29,4 +29,4 @@ class OfferStore {
   }
 }
 
-module.exports = new OfferStore(setupCollection().catch((e) => console.error(`Failed to set up 'offers' collection`, e)));
+module.exports = new OfferStore(setupCollection().catch((err) => console.error(`Failed to set up 'offers' collection`, err)));
