@@ -44,7 +44,6 @@ const isInvalidAddress = (address) => {
 };
 
 const isInvalidRegistration = (registration) => {
-  let invalid = false;
   registration = registration.split(`:`);
 
   if (registration.length !== 2) {
@@ -54,14 +53,8 @@ const isInvalidRegistration = (registration) => {
   const HOURS_IN_DAY = 12;
   const MINUTES_IN_HOUR = 59;
 
-  if (!(+registration[0] <= HOURS_IN_DAY && +registration[0] >= 0)) {
-    invalid = true;
-  }
-
-  if (!(+registration[1] <= MINUTES_IN_HOUR && +registration[1] >= 0)) {
-    invalid = true;
-  }
-  return invalid;
+  return !(+registration[0] <= HOURS_IN_DAY && +registration[0] >= 0) &&
+    !(+registration[1] <= MINUTES_IN_HOUR && +registration[1] >= 0);
 };
 
 const validate = (data) => {
