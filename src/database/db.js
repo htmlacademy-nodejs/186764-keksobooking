@@ -1,5 +1,7 @@
 'use strict';
 
+const PRECESS_CODES = require(`../util/process-codes`);
+
 const {MongoClient} = require(`mongodb`);
 
 const DB_SETTINGS = {
@@ -9,7 +11,7 @@ const DB_SETTINGS = {
 
 module.exports = MongoClient.connect(DB_SETTINGS.URL, {useNewUrlParser: true})
   .then((client) => client.db(DB_SETTINGS.DB_NAME))
-  .catch((e) => {
-    console.error(`Failed to connect Mongodb`, e);
-    process.exit(1);
+  .catch((err) => {
+    console.error(`Failed to connect Mongodb`, err);
+    process.exit(PRECESS_CODES.ERROR_EXIT);
   });
