@@ -22,6 +22,12 @@ const toPage = async (cursor, skip = 0, limit = offersCount) => {
 
 const asyncMiddleware = (fn) => (req, res, next) => fn(req, res, next).catch(next);
 
+offersRouter.use((req, res, next) => {
+  res.header(`Access-Control-Allow-Origin`, `*`);
+  res.header(`Access-Control-Allow-Headers`, `Origin, X-Requested-With, Content-Type, Accept`);
+  next();
+});
+
 offersRouter.get(``, asyncMiddleware(async (req, res) => {
   const skip = parseInt(req.query.skip || 0, 10);
   const limit = parseInt(req.query.limit || offersCount, 10);
