@@ -1,11 +1,11 @@
 'use strict';
 
-const STATUS_CODES = require(`../util/status-codes`);
+const StatusCode = require(`./src/util/status-code`);
 
 class BadRequest extends Error {
   constructor(message) {
     super(message);
-    this.code = STATUS_CODES.BAD_REQUEST;
+    this.code = StatusCode.BAD_REQUEST;
   }
 }
 

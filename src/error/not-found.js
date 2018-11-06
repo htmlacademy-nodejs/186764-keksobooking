@@ -1,11 +1,11 @@
 'use strict';
 
-const STATUS_CODES = require(`../util/status-codes`);
+const StatusCode = require(`./src/util/status-code`);
 
 class NotFound extends Error {
   constructor(message) {
     super(message);
-    this.code = STATUS_CODES.NOT_FOUND;
+    this.code = StatusCode.NOT_FOUND;
   }
 }
 
