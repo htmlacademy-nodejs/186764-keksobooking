@@ -3,6 +3,8 @@
 const readline = require(`readline`);
 const generateEntity = require(`../generator/generate-entity`);
 const fs = require(`fs`);
+const ProcessCode = require(`../util/process-code`);
+const logger = require(`../util/logger`);
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -50,6 +52,10 @@ const getPath = (objects) => {
 };
 
 const saveQuestion = (data) => {
+  const ANSWERS = {
+    yes: `да`
+  };
+
   return new Promise((resolve, reject) => {
 
     const saveFile = (filePath, objects) => {
@@ -67,7 +73,7 @@ const saveQuestion = (data) => {
     }
 
     return rl.question(`Файл уже существует. Перезаписать его? да/нет `, (answer) => {
-      if (answer.toLowerCase() !== `да`) {
+      if (answer.toLowerCase() !== ANSWERS.yes) {
         return reject(`Файл не был записан`);
       }
       return saveFile(data.filePath, data.objects);
@@ -86,8 +92,8 @@ module.exports = {
     }).then(() => {
       return rl.close();
     }).catch((error) => {
-      console.error(error);
-      process.exit(1);
+      logger.error(error);
+      process.exit(ProcessCode.ERROR_EXIT);
     });
   }
 };

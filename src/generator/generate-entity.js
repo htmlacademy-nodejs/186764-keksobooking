@@ -2,7 +2,9 @@
 
 const AnnouncerSettings = require(`./announcer-settings`);
 
-const generateRandomString = () => Math.random().toString(36).substring(2);
+const GENERATE_RADIX = 36;
+
+const generateRandomString = () => Math.random().toString(GENERATE_RADIX).substring(2);
 
 const getRandomValue = (maxValue, minValue = 0) => Math.floor(Math.random() * (maxValue - minValue) + minValue);
 

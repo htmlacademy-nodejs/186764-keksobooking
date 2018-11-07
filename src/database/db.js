@@ -1,15 +1,20 @@
 'use strict';
 
+const ProcessCode = require(`../util/process-code`);
+const logger = require(`../util/logger`);
+
 const {MongoClient} = require(`mongodb`);
 
-const DB_SETTINGS = {
-  URL: `mongodb://localhost:27017`,
-  DB_NAME: `keksobooking`
-};
+const {
+  DB_HOST = `localhost:27017`,
+  DB_PATH = `keksobooking`
+} = process.env;
 
-module.exports = MongoClient.connect(DB_SETTINGS.URL, {useNewUrlParser: true})
-  .then((client) => client.db(DB_SETTINGS.DB_NAME))
-  .catch((e) => {
-    console.error(`Failed to connect Mongodb`, e);
-    process.exit(1);
+const URL = `mongodb://${DB_HOST}`;
+
+module.exports = MongoClient.connect(URL, {useNewUrlParser: true})
+  .then((client) => client.db(DB_PATH))
+  .catch((err) => {
+    logger.error(`Failed to connect Mongodb`, err);
+    process.exit(ProcessCode.ERROR_EXIT);
   });

@@ -44,7 +44,6 @@ const isInvalidAddress = (address) => {
 };
 
 const isInvalidRegistration = (registration) => {
-  let invalid = false;
   registration = registration.split(`:`);
 
   if (registration.length !== 2) {
@@ -54,14 +53,30 @@ const isInvalidRegistration = (registration) => {
   const HOURS_IN_DAY = 12;
   const MINUTES_IN_HOUR = 59;
 
-  if (!(+registration[0] <= HOURS_IN_DAY && +registration[0] >= 0)) {
-    invalid = true;
-  }
+  return !(+registration[0] <= HOURS_IN_DAY && +registration[0] >= 0) &&
+    !(+registration[1] <= MINUTES_IN_HOUR && +registration[1] >= 0);
+};
 
-  if (!(+registration[1] <= MINUTES_IN_HOUR && +registration[1] >= 0)) {
-    invalid = true;
-  }
-  return invalid;
+const makeData = (offer) => {
+  const date = parseInt(Date.now(), 10);
+
+  const address = offer.address.split(`, `);
+  const location = {
+    x: parseInt(address[0], 10),
+    y: parseInt(address[1], 10)
+  };
+
+  const author = {
+    name: `Pavel`,
+    avatar: `api/offers/${date}/avatar`
+  };
+
+  return {
+    author,
+    offer,
+    location,
+    date
+  };
 };
 
 const validate = (data) => {
@@ -83,6 +98,8 @@ const validate = (data) => {
     errors.push(requiredError(`price`));
   } else if (data.price < validateSettings.MIN_PRICE || data.price > validateSettings.MAX_PRICE) {
     errors.push(`Цена должна быть в диапозоне от 1 до 100 000`);
+  } else {
+    data.price = parseInt(data.price, 10);
   }
 
   if (!data.address) {
@@ -107,6 +124,8 @@ const validate = (data) => {
     errors.push(requiredError(`rooms`));
   } else if (data.rooms < validateSettings.MIN_ROOMS || data.rooms > validateSettings.MAX_ROOMS) {
     errors.push(`Количество комнат должно быть от 1 до 1000`);
+  } else {
+    data.rooms = parseInt(data.rooms, 10);
   }
 
   if (data.features) {
@@ -128,14 +147,15 @@ const validate = (data) => {
     }
   }
 
+  if (data.guests) {
+    data.guests = parseInt(data.guests, 10);
+  }
 
   if (errors.length) {
     throw new NotValid(errors);
   }
 
-  const date = Date.now();
-  data.date = date;
-  return data;
+  return makeData(data);
 };
 
 module.exports = validate;
