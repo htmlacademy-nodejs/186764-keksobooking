@@ -57,6 +57,28 @@ const isInvalidRegistration = (registration) => {
     !(+registration[1] <= MINUTES_IN_HOUR && +registration[1] >= 0);
 };
 
+const makeData = (offer) => {
+  const date = parseInt(Date.now(), 10);
+
+  const address = offer.address.split(`, `);
+  const location = {
+    x: parseInt(address[0], 10),
+    y: parseInt(address[1], 10)
+  };
+
+  const author = {
+    name: `Pavel`,
+    avatar: `api/offers/${date}/avatar`
+  };
+
+  return {
+    author,
+    offer,
+    location,
+    date
+  };
+};
+
 const validate = (data) => {
   const errors = [];
 
@@ -121,22 +143,11 @@ const validate = (data) => {
     }
   }
 
-
   if (errors.length) {
     throw new NotValid(errors);
   }
 
-  const date = Date.now();
-
-  const address = data.address.split(`, `);
-  const location = {
-    x: parseInt(address[0], 10),
-    y: parseInt(address[1], 10)
-  };
-
-  data.date = date;
-  data.location = location;
-  return data;
+  return makeData(data);
 };
 
 module.exports = validate;

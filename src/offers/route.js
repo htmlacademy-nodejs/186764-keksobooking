@@ -73,7 +73,7 @@ offersRouter.post(``, jsonParser, upload.single(`avatar`), asyncMiddleware(async
   if (avatar) {
     await offersRouter.imageStore.save(insertId, toStream(avatar.buffer));
   }
-  res.send(validate(validated));
+  res.send(validated);
 }));
 
 offersRouter.get(`/:date/avatar`, asyncMiddleware(async (req, res) => {
