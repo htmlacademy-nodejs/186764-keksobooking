@@ -63,6 +63,8 @@ offersRouter.post(``, jsonParser, upload.single(`avatar`), asyncMiddleware(async
 
   if (avatar) {
     validated.author.name = avatar.originalname;
+  } else {
+    validated.author.avatar = `/img/avatars/default.png`;
   }
 
   const result = await offersRouter.offerStore.save(validated);
