@@ -3,18 +3,17 @@
 const db = require(`../database/db`);
 const mongodb = require(`mongodb`);
 
-class ImagesStore {
+class ImageStore {
 
   async getBucket() {
     if (this._bucket) {
       return this._bucket;
     }
-
     const dBase = await db;
     if (!this._bucket) {
       this._bucket = new mongodb.GridFSBucket(dBase, {
         chunkSizeBytes: 512 * 1024,
-        backetName: `avatars`
+        bucketName: `avatars`
       });
     }
     return this._bucket;
@@ -24,7 +23,7 @@ class ImagesStore {
     const bucket = await this.getBucket();
     const results = await (bucket).find({filename}).toArray();
     const entity = results[0];
-    if (entity) {
+    if (!entity) {
       return void 0;
     }
     return {info: entity, stream: bucket.openDownloadStreamByName(filename)};
@@ -38,4 +37,4 @@ class ImagesStore {
   }
 }
 
-module.exports = new ImagesStore();
+module.exports = new ImageStore();

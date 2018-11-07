@@ -59,19 +59,17 @@ offersRouter.post(``, jsonParser, upload.single(`avatar`), asyncMiddleware(async
   const body = req.body;
   const avatar = req.file;
 
-  if (avatar) {
-    body.avatar = {
-      name: avatar.originalname
-    };
-  }
-
   const validated = validate(body);
 
+  if (avatar) {
+    validated.author.name = avatar.originalname;
+  }
+
   const result = await offersRouter.offerStore.save(validated);
-  const insertId = result.insertId;
+  const insertedId = result.insertedId;
 
   if (avatar) {
-    await offersRouter.imageStore.save(insertId, toStream(avatar.buffer));
+    await offersRouter.imageStore.save(insertedId, toStream(avatar.buffer));
   }
   res.send(validated);
 }));
@@ -119,8 +117,8 @@ offersRouter.use((err, req, res, _next) => {
 });
 
 
-module.exports = (offerStore, imagesStore) => {
+module.exports = (offerStore, imageStore) => {
   offersRouter.offerStore = offerStore;
-  offersRouter.imageStore = imagesStore;
+  offersRouter.imageStore = imageStore;
   return offersRouter;
 };

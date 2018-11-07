@@ -67,7 +67,6 @@ const makeData = (offer) => {
   };
 
   const author = {
-    name: `Pavel`,
     avatar: `api/offers/${date}/avatar`
   };
 
@@ -149,6 +148,10 @@ const validate = (data) => {
 
   if (data.guests) {
     data.guests = parseInt(data.guests, 10);
+  }
+
+  if (!data.photos) {
+    data.photos = [];
   }
 
   if (errors.length) {
