@@ -98,6 +98,8 @@ const validate = (data) => {
     errors.push(requiredError(`price`));
   } else if (data.price < validateSettings.MIN_PRICE || data.price > validateSettings.MAX_PRICE) {
     errors.push(`Цена должна быть в диапозоне от 1 до 100 000`);
+  } else {
+    data.price = parseInt(data.price, 10);
   }
 
   if (!data.address) {
@@ -122,6 +124,8 @@ const validate = (data) => {
     errors.push(requiredError(`rooms`));
   } else if (data.rooms < validateSettings.MIN_ROOMS || data.rooms > validateSettings.MAX_ROOMS) {
     errors.push(`Количество комнат должно быть от 1 до 1000`);
+  } else {
+    data.rooms = parseInt(data.rooms, 10);
   }
 
   if (data.features) {
@@ -141,6 +145,10 @@ const validate = (data) => {
     if (typeof data.name !== `string`) {
       errors.push(`Имя должно быть в текстовом формате`);
     }
+  }
+
+  if (data.guests) {
+    data.guests = parseInt(data.guests, 10);
   }
 
   if (errors.length) {
