@@ -28,6 +28,10 @@ class OfferStore {
   async save(offerData) {
     return (await this.collection).insertOne(offerData);
   }
+
+  async saveMany(offerData) {
+    return (await this.collection).insertMany(offerData);
+  }
 }
 
 module.exports = new OfferStore(setupCollection().catch((err) => logger.error(`Failed to set up 'offers' collection`, err)));
